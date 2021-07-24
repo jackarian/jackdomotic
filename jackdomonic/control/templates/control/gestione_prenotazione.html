@@ -1,0 +1,110 @@
+<div class="row" style="padding: 0; margin: 0; margin-left: 0px;margin-top: 50px">
+	<div class="col-sm-12" style="padding: 0; margin: 0;">
+		<form id="ff" method="post" action="">
+			{% csrf_token %}
+			<div class="row" style="padding: 0; margin: 0;">
+				<div class="col-sm-6" style="margin-right: 0px; padding: 0;margin-left: 10px;">
+
+					<input type="text" class="easyui-datebox" required="required"
+						id="start_day" name="start_day" label="Giorno: "
+						labelPosition="top" style= "width: 50%" data-options="formatter:myformatter,parser:myparser">
+
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-5"	style="margin-left: 25px; margin-right: 0px; padding: 0">
+					<input class="easyui-timepicker" name="start_hour"
+						required="required" data-options="hour24:true" id="start_hour"
+						label="Ora Inizio:" labelPosition="top" style="width: 90%">
+				</div>
+				<div class="col-sm-5"
+					style="margin-left: 15px; margin-right: 0px;margin-left: 5px; padding: 0">
+					<input class="easyui-timepicker" name="end_hour" id="end_hour"
+						required="required" label="Ora Fine:" labelPosition="top"
+						style="width: 90%" data-options="hour24:true">
+				</div>
+            </div>
+            <div class="row">
+				<div class="col-sm-5" style="margin-left: 25px; margin-right: 0px; padding: 0">
+					<select  name="resource_tag"
+						id="resource_tag" label="Risorsa" style="width: 90%"
+						labelPosition="top" required="required">
+					</select>
+				</div>
+			</div>
+			<input type="hidden" name="plc_uid" id="plc_uid">
+		</form>
+		<div class="row">
+				<div class="col-sm-12" style="margin-left: 0px; margin-right: 0px;margin-top: 20px;padding: 0;text-align: center;">
+				<div style="text-align: center; padding: 5px 0">
+					<a href="javascript:void(0)" class="easyui-linkbutton"
+					onclick="validatFormPrenotazioneConInvio()" style="width: 80px">Submit</a>
+					<a href="javascript:void(0)" class="easyui-linkbutton"
+					onclick="clearForm()" style="width: 80px">Clear</a>
+				</div>
+				</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+    $( "#ff" ).on( "submit", function( event ) {
+  		event.preventDefault();
+  		console.log( $( this ).serialize() );
+		if($(this).form('enableValidation').form('validate')){
+			console.log($('#start_day').datebox('getValue'));
+			console.log(($('#start_hour').timepicker('getValue')));
+			console.log(($('#end_hour').timepicker('getValue')));
+			console.log($('#plc_uid').val());
+			console.log($('#resource_tag').combobox('getValue'));
+			/* plc, resource, start_p, end_p */
+			var start = $('#start_day').datebox('getValue')+" "+$('#start_hour').timepicker('getValue')+":20";
+			var end   = $('#start_day').datebox('getValue')+" "+$('#end_hour').timepicker('getValue')+":00";
+
+			//Controllo delle date
+
+		    var c_start = moment(start,"YYYY-MM-DD HH:mm:ss");
+			var c_end   = moment(end,"YYYY-MM-DD HH:mm:ss");
+			var now = moment();
+
+			if(c_start.isBefore(now)){
+				$.messager.alert('Errore','Data inizio non puo\'essere minore della data corrente.', 'error');
+				return;
+			}
+			if(c_start.isValid()&&c_end.isValid()){//Controllo se le date inserite sono valide
+
+				if(c_end.isBefore(c_start)){//L'ora di inizio prenotazione deve essere antecedente l'ora di fine prenotazione
+
+					$.messager.alert('Errore','Data inizio e fine prenotazione non sono corrette. L\'ora di inizio prenotazione deve essere antecedente l\'ora di fine prenotazione ', 'error');
+
+
+				}else {
+
+					aggiungiPrenotazione($('#plc_uid').val(),$('#resource_tag').combobox('getValue'),start,end);
+				}
+
+			}else{
+				$.messager.alert('Errore','Data inizio e fine prenotazione non sono corrette. Controllare immissione dati.', 'error');
+			}
+
+		}else{
+		   return false;
+		}
+	});
+	$('#resource_tag').combobox({
+                url:base_url+'/resource',
+                valueField:'text',
+                textField:'text',
+                method:'get',
+                onSelect: function(rec){
+            		$('#plc_uid').val(rec.plc_uid);
+        		}
+                });
+
+	$('#start_day').datebox().datebox('calendar').calendar({
+                validator: function(date){
+                    var now = new Date();
+                    var d1 = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                    return date>=d1;
+                }
+            });
+</script>

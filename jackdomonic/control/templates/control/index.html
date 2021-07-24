@@ -1,0 +1,74 @@
+{% extends "admin/base.html" %}
+{% load static %}
+{% block extrastyle %}
+    <link href="{% static "control/css/bootstrap.css" %}?v=100" rel="stylesheet">
+    <link href="{% static "control/css/bootstrap-grid.css" %}?v=100" rel="stylesheet">
+    <link href="{% static "control/css/jquery-ui.css" %}?v=100" rel="stylesheet">
+    <link href="{% static "control/css/jquery-ui.theme.css" %}?v=100" rel="stylesheet">
+    <link href="{% static "control/js/themes/bootstrap/easyui.css" %}?v=201" rel="stylesheet">
+    <link href="{% static "control/js/themes/bootstrap/tooltip.css" %}?v=200" rel="stylesheet">
+    <link href="{% static "control/js/themes/icon.css" %}?v=201" rel="stylesheet">
+    <link href="{% static "control/css/modal.css" %}" rel="stylesheet">
+    <link href="{% static "control/css/personal.css" %}?v=221" rel="stylesheet">
+    <link href="{% static "control/css/simplepicker.css" %}" rel="stylesheet">
+
+{% endblock %}
+{% block content %}
+<div class="row" style="margin-left: 25px; margin-top: 70px">
+    {% include "control/searchfilter.html" %}
+</div>
+<div class="row"
+     style="margin-top: 5px; margin-left: 0px; margin-right: 0px">
+    <div class="col-lg-12"
+         style="margin-left: 0px; margin-right: 0px; padding: 0; padding-left: 2px">
+        <div id="dg" style="width: 100%; height: 800px; margin-left: 0px; margin-right: 0px"></div>
+    </div>
+</div>
+
+
+<div id="infoDialog"></div>
+<div id="tb" style="padding: 2px 5px;">
+    <a href="javascript:void(0)" class="easyui-linkbutton"
+       data-options="iconCls:'icon-save',plain:true"
+       onclick="aggiornaStatoOrdini()">Salva Modifiche</a> <a
+        href="javascript:void(0)" class="easyui-linkbutton"
+        data-options="iconCls:'icon-undo',plain:true" onclick="reject()">Reset
+    Modifche</a> <a href="javascript:void(0)" class="easyui-linkbutton"
+                    data-options="iconCls:'icon-reload',plain:true"
+                    onclick="deseleziona()">Deseleziona</a> <a href="javascript:void(0)"
+                                                               class="easyui-linkbutton"
+                                                               data-options="iconCls:'icon-add',plain:true"
+                                                               onclick="creaPrenotazione()">Crea Prenotazione</a> <input
+        class="easyui-checkbox" name="enableSelection" value="abilita"
+        checked="true" width="150" labelWidth="120" title="Se...."
+        label="Abilita Selezione"> <a href="javascript:void(0)"
+                                      class="easyui-linkbutton" onclick="exportToExcel()">Export Excel</a>
+</div>
+<div id="modPrenotazione"></div>
+<div id="modErrors"></div>
+<div id="dd1"></div>
+<div id="dd2"></div>
+<!-- Include script loader -->
+{% include "control/script_loader.html" %}
+<script
+        src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.0/sockjs.min.js"
+        integrity="sha512-5yJ548VSnLflcRxWNqVWYeQZnby8D8fJTmYRLyvs445j1XmzR8cnWi85lcHx3CUEeAX+GrK3TqTfzOO6LKDpdw=="
+        crossorigin="anonymous"></script>
+<script
+        src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"
+        integrity="sha512-iKDtgDyTHjAitUDdLljGhenhPwrbBfqTKWO1mkhSFH3A7blITC9MhYon6SjnMhp4o0rADGw9yAC6EW4t5a4K3g=="
+        crossorigin="anonymous"></script>
+
+
+<script src="{% static "control/js/datepicker_functions.js" %}?v=15"></script>
+<script src="{% static "control/js/utils/common.js" %}?v=20"></script>
+<script src="{% static "control/js/utils/setting.js" %}?v=1"></script>
+
+<script src="{% static "control/js/datagrid-detailview.js" %}?v=25"></script>
+<script src="{% static "control/js/datagrid-detailview-errors.js" %}?v=26"></script>
+<script src="{% static "control/js/resource/resource_utils.js" %}?v=100"></script>
+<script src="{% static "control/js/resource/resource.js" %}?v=81"></script>
+<script src="{% static "control/js/resource/ordini_gestione_errori.js" %}?v=24"></script>
+<script src="{% static "control/js/datagrid-export.js" %}"></script>
+</main>
+{% endblock %}
